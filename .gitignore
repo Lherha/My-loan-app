@@ -1,0 +1,13 @@
+# ignore all folder in this directory
+
+wp-content/plugins/
+
+wp-content/themes/
+
+wp-content/cache/
+
+wp-content/uploads/
+
+# Files to ignor
+
+.env
