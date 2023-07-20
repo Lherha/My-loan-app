@@ -11,3 +11,5 @@ wp-content/uploads/
 # Files to ignor
 
 .env
+
+wp-config.php
