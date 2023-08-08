@@ -1,0 +1,16 @@
+/*
+theme name: astra child
+template: astra
+theme uri: https://childthemewp.com/astra/
+author: Ajao Mueez Bolaji
+author uri: https://childthemewp.com
+version: 1.0.0
+license: gnu general public license v2 or later
+license uri: http://www.gnu.org/licenses/gpl-2.0.html
+tags: opensource
+text domain: astrachild
+*/
+
+body{
+    background-color: blue;
+}
