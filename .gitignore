@@ -27,7 +27,7 @@ wp-content/cache/
 
 wp-content/uploads/
 
-# Files to ignor
+# Files to ignore
 
 .env
 
