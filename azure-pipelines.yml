@@ -4,31 +4,46 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/php
 
 trigger:
-- main
+- main  # Build when changes are pushed to the 'main' branch
+
+pr:
+- '*'  # Build for all pull requests
 
 pool:
-  vmImage: ubuntu-latest
-
-variables:
-  phpVersion: 7.2
+  vmImage: 'ubuntu-latest'
 
 steps:
 - script: |
-    sudo update-alternatives --set php /usr/bin/php$(phpVersion)
-    sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
-    sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
-    sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
-    sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
-    php -version
-  displayName: 'Use PHP version $(phpVersion)'
+    echo 'Installing PHP...'
+    sudo apt-get install -y php
 
-- script: |
-    # Enable the composer/installers plugin
-    composer config --no-plugins allow-plugins.composer/installers true
+    echo 'Installing composer...'
+    sudo apt-get install -y composer
 
-    # Enable the johnpbloch/wordpress-core-installer plugin
-    composer config --no-plugins allow-plugins.johnpbloch/wordpress-core-installer true
+    echo 'Installing project dependencies...'
+    composer install
 
-    # Run composer install
-    composer install --no-interaction --prefer-dist
-  displayName: 'composer install'
+    echo 'Running PHP tests...'
+    phpunit tests/  # Run PHP unit tests
+
+    echo 'Building and packaging the application...'
+    # Add commands to build or package your application
+
+  displayName: 'Build and Test'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: '**'  # Copy all files
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'bolajiartifact'
+    publishLocation: 'Container'
