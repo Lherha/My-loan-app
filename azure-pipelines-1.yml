@@ -1,0 +1,44 @@
+# PHP
+# Test and package your PHP project.
+# Add steps that run tests, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/php
+
+trigger:
+- main  # Build when changes are pushed to the 'main' branch
+
+pr:
+- '*'  # Build for all pull requests
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: |
+    echo 'Installing PHP...'
+    sudo apt-get install -y php
+
+    echo 'Installing composer...'
+    sudo apt-get install -y composer
+
+    echo 'Installing project dependencies...'
+    composer install
+
+    echo 'Running PHP tests...'
+    phpunit tests/  # Run PHP unit tests
+
+    echo 'Building and packaging the application...'
+    # Add commands to build or package your application
+
+  displayName: 'Build and Test'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: '**'  # Copy all files
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
